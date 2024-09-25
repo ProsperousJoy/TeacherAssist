@@ -3,7 +3,7 @@ import numpy as np
 from flask import Flask, request, jsonify
 
 # Booting up model
-filename = "Model/GradesRF.sav"
+filename = "..\Model\GradesRF.sav"
 model = pickle.load(open(filename, "rb"))
 
 app = Flask(__name__)

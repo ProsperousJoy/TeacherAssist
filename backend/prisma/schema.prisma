@@ -18,3 +18,19 @@ model TeacherAssist {
 model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 }
+
+model StudentData {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  studentname String
+  studytime   Int
+  failures    Int
+  absences    Int
+  schoolsup   Boolean
+  paid        Boolean
+  health      Int
+  G1        Float
+  G2        Float
+  G3        Float
+  average    Float
+  prediction Float
+}
