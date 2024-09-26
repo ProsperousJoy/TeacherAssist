@@ -19,6 +19,6 @@ Login response when sucsess is give JWT token key.
 ```
 {
     "message": "Login Successfull, Welcome Muhammad Jamal Com",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjRmZjllOGI5MjVlNTdiMmI3ODI1ZSIsImlhdCI6MTcyNzMzNjE3MX0.5saAbxyJ2kjNZCpm88jG6aq_sdr1kNTCWDa-FyGxovA"
+    "token": "<token>"
 }
 ```
