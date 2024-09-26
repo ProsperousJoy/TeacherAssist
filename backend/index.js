@@ -143,6 +143,18 @@ app.post('/teacherInput',jwtValidator, async(req,res) =>{
     }
 })
 
+app.get('/studentdata', jwtValidator, async(req,res) =>{
+    try {
+        const data = await prisma.studentData.findMany()
+        res.json(data)
+    } catch (error) {
+        res.status(400).json({
+            message: "Error Fetching Data",
+            error: error.message
+        })
+    }
+})
+
 app.listen(3000,() =>{
     console.log('Server is running on port 3000');
 })
