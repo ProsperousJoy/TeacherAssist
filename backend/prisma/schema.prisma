@@ -30,6 +30,6 @@ model StudentData {
   G3        Float
   average    Float
   prediction Float
-  teacher  User @relation(fields: [teacherId], references: [id])
   teacherId String @db.ObjectId
+  teacher  User @relation(fields: [teacherId], references: [id])
 }

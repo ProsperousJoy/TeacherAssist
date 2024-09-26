@@ -18,26 +18,32 @@ app.get('/users', async(req, res)=>{
 
 app.post('/login', async(req, res)=>{
     const {username, password} = req.body;
-    const user = await prisma.user.findFirst({
-        where:{
-            username: username,
+    try {
+        const user = await prisma.user.findFirst({
+            where:{
+                username: username,
+            }
+        })
+        if(user){
+            const isMatch = await bcrypt.compare(password, user.password);
+            if(isMatch){
+                const token = jwt.sign({id: user.id}, process.env.JWT_SECRET);
+                res.json({message: `Login Successfull, Welcome ${user.fullname}`,
+                token: token});
+            }else{
+                res.json({message: 'Invalid password'});
+            }
+        } else{
+            res.json({message: 'User not found with this username'});
         }
-    })
-    if(user){
-        const isMatch = await bcrypt.compare(password, user.password);
-        if(isMatch){
-            const token = jwt.sign({id: user.id}, process.env.JWT_SECRET);
-            res.json({message: `Login Successfull, Welcome ${user.fullname}`,
-            token: token});
-        }else{
-            res.json({message: 'Invalid password'});
-        }
-    } else{
-        res.json({message: 'User not found with this username'});
+    } catch (error) {
+        res.status(400).json({
+            message: "Error to Login"
+        })
     }
 })
 
-app.post('/userRegister' ,async(req,res) =>{
+app.post('/userRegister',async(req,res) =>{
     try {
         const {username,fullname, password, email} = req.body;
 
@@ -68,9 +74,11 @@ app.post('/userRegister' ,async(req,res) =>{
                 username: username,
             }
         })
-        res.json(insertData);    
+        if(insertData){
+            res.json(insertData);    
+        }
     } catch (error) {
-        res.json({message: 'Error in registering user',
+        res.status(400).json({message: 'Error in registering user',
             error: error.message
         });
     }
@@ -93,7 +101,11 @@ app.post('/teacherInput',jwtValidator, async(req,res) =>{
         G3: parseInt(G3),
         average: parseInt(average),
         prediction: 0,
-        teacherId: req.profile.id,
+        teacher: {
+            connect: {
+                id: req.profile.id,
+            }
+        },
     };
     try {
 
@@ -119,7 +131,15 @@ app.post('/teacherInput',jwtValidator, async(req,res) =>{
             });
         }
     } catch (error) {
-        res.json({message: 'Error input data', error: error.message});
+        var message = error.message
+        if(message.includes("is missing")){
+            res.status(400).json({
+                message: "Input Data Fail Because Some Data Is Missing",
+                error: error.message
+            })
+        }else{
+            res.status(400).json({message: 'Error input data', error: error.message});
+        }
     }
 })
 

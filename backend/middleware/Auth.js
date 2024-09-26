@@ -16,7 +16,7 @@ const jwtValidator = (req,res,next) =>{
 
     try {
         const verified = jwt.verify(token, process.env.JWT_SECRET);
-        req.profile = verified;
+        req.profile = verified; 
         next();
     } catch (error) {
         res.status(401).json({message: 'Invalid token'});
