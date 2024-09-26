@@ -143,7 +143,7 @@ app.post('/teacherInput',jwtValidator, async(req,res) =>{
     }
 })
 
-app.get('/studentdata', jwtValidator, async(req,res) =>{
+app.get('/studentData', jwtValidator, async(req,res) =>{
     try {
         const data = await prisma.studentData.findMany()
         res.json(data)
