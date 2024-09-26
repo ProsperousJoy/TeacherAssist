@@ -7,16 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model TeacherAssist {
+model User {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   email    String @unique
   fullname String
   password String
   username String @unique
-}
-
-model User {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  StudentData StudentData[]
 }
 
 model StudentData {
@@ -33,4 +30,6 @@ model StudentData {
   G3        Float
   average    Float
   prediction Float
+  teacher  User @relation(fields: [teacherId], references: [id])
+  teacherId String @db.ObjectId
 }

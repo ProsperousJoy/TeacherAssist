@@ -12,13 +12,13 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.get('/users', async(req, res)=>{
-    const users = await prisma.teacherAssist.findMany();
+    const users = await prisma.user.findMany();
     res.json(users);
 })
 
 app.post('/login', async(req, res)=>{
     const {username, password} = req.body;
-    const user = await prisma.teacherAssist.findFirst({
+    const user = await prisma.user.findFirst({
         where:{
             username: username,
         }
@@ -41,7 +41,7 @@ app.post('/userRegister' ,async(req,res) =>{
     try {
         const {username,fullname, password, email} = req.body;
 
-        const user = await prisma.teacherAssist.findFirst({
+        const user = await prisma.user.findFirst({
             where:{
                 OR:[
                     {
@@ -60,7 +60,7 @@ app.post('/userRegister' ,async(req,res) =>{
         }
 
         var hashPassword = await bcrypt.hash(password, 10);
-        const insertData = await prisma.teacherAssist.create({
+        const insertData = await prisma.user.create({
             data:{
                 email: email,
                 fullname: fullname,
@@ -79,6 +79,7 @@ app.post('/userRegister' ,async(req,res) =>{
 
 app.post('/teacherInput',jwtValidator, async(req,res) =>{
     const {studytime, failures,absences,schoolsup,paid,health,G1,G2,G3,average, studentname} = req.body;
+
     const json = {
         studentname: studentname,
         studytime: parseInt(studytime),
@@ -91,13 +92,12 @@ app.post('/teacherInput',jwtValidator, async(req,res) =>{
         G2: parseInt(G2),
         G3: parseInt(G3),
         average: parseInt(average),
-        prediction: 0
+        prediction: 0,
+        teacherId: req.profile.id,
     };
     try {
 
         const studentData = await prisma.studentData.create({data: json});
-        console.log(studentData);
-
         if(studentData){
             const predict = await axios.post('http://localhost:5000/predict', json, {
                 headers: {
@@ -120,7 +120,6 @@ app.post('/teacherInput',jwtValidator, async(req,res) =>{
         }
     } catch (error) {
         res.json({message: 'Error input data', error: error.message});
-        console.log(error)
     }
 })
 
